@@ -43,11 +43,12 @@ You can follow same procedure in the official  AWS document [Getting started wit
    --nodes-min 2 \
    --nodes-max 2 \ 
    --zones <AZ-1>,<AZ-2>
+   ```
    
    example:
-   eksctl create cluster --name naresh \
-      --region ap-south-1 \
-   --node-type t2.small \
+   ```sh
+   eksctl create cluster --name my-kube-cluster --region ap-south-1 --node-type t2.small
+   ```
 
 
 5. To delete the EKS clsuter 
