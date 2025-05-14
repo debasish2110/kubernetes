@@ -1,0 +1,200 @@
+Schedulers 
+ ## schedule ##
+
+Scheduling overview
+A scheduler watches for newly created Pods that have no Node assigned. For every Pod that the scheduler discovers, the scheduler becomes responsible for finding the best Node for that Pod to run on. The scheduler reaches this placement decision taking into account the scheduling principles described below.
+
+1. Node Selector
+
+2. Nodeaffinity 
+
+3. Daemonset
+
+4. Taint and Toleration  
+
+
+1.Nodeselector 
+
+NodeSelector is the simplest recommended form of node selection constraint. You can add the nodeSelector field to your Pod specification and specify the node labels you want the target node to have. Kubernetes only schedules the Pod onto nodes that have each of the labels you specify.
+
+# to label the node 
+kubectl label nodes <node-name> <label-key>=<label-value>
+
+Example: 
+
+kubectl label nodes ip-192-168-43-22.ap-south-1.compute.internal size=large
+
+
+# to unlabel
+kubectl label nodes <node-name> <label-key>=<label-value>-
+kubectl label nodes ip-192-168-43-22.ap-south-1.compute.internal size=large-
+
+# to list 
+
+kubectl get nodes --show-labels
+
+Labels are casesensitve 
+
+
+Ex:Below Pod node selector 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+      app: webapp
+      type: front-end
+spec:
+  containers:
+  - name: nginx-container 
+    image: nginx
+  nodeSelector:
+    size: Large
+
+Note:if pod label is matching  it will schedule on to labled node only
+     if my pod label is not matching it will not schedule on any node always trying to schedule on labeld node only otherwise it will not scheduled 
+     
+
+===============================================================================
+
+
+2.Node affinity
+Node affinity is conceptually similar to nodeSelector, allowing you to constrain which nodes your Pod can be scheduled on based on node labels. There are two types of node affinity:
+
+a.requiredDuringSchedulingIgnoredDuringExecution: The scheduler can't schedule the Pod unless the rule is met. This functions like nodeSelector, but with a more expressive syntax.
+b.preferredDuringSchedulingIgnoredDuringExecution: The scheduler tries to find a node that meets the rule. If a matching node is not available, the scheduler still schedules the Pod.
+
+  
+
+a.requiredDuringSchedulingIgnoredDuringExecution
+***it will schedule if matches the pod and node label only otherwise it will not schedule
+ 
+Ex: a.Schedule a Pod using required node affinity
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd            
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+
+
+b.preferredDuringSchedulingIgnoredDuringExecution:
+
+******if label match it will create in matched node or another node
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd          
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+
+======================================================================
+3. Daemonset: 
+
+A Daemonset is another controller that manages pods like Deployments, ReplicaSets, and StatefulSets. It was created for one particular purpose: ensuring that the pods it manages to run on all the cluster nodes.pod is going to schedule all available nodes 
+
+ex : if we have three nodes same pod is going to schedule on three nodes 
+
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: test-nginx
+        image: nginx
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+========================================================
+#Taint and tolleration 
+
+Taints are the opposite -- they allow a node to repel a set of pods. Tolerations are applied to pods. Tolerations allow the scheduler to schedule pods with matching taints.
+
+Two types:
+Noschedule:
+Noexecutive
+
+# Below Commands are for Node Taint and Untaint proces :
+
+
+kubectl taint node ip-192-168-43-22.ap-south-1.compute.internal app=blue:NoSchedule #taint 
+kubectl taint node ip-192-168-43-22.ap-south-1.compute.internal app=blue:NoSchedule- # untaint
+
+kubectl taint node ip-192-168-43-22.ap-south-1.compute.internal app=blue:Noexecutive taint
+kubectl taint node ip-192-168-43-22.ap-south-1.compute.internal app=blue:Noexecutive-  # untaint
+
+kubectl describe node ip-192-168-45-254.ap-south-1.compute.internal | grep Taints  #to list tainted nodes
+
+
+toleration pod example:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+  - key: "app"
+    operator: "Equal"
+    value: "blue"
+    effect: "NoSchedule"
+
+
+IMP Note:
+
+*Toleration pod only create into specfic tainted node if labels match
+
+*The taint effect defines how a tainted node reacts to a pod without appropriate toleration. It must be one of the following effects; 
+
+*NoSchedule—The pod will not get scheduled to the node without a matching toleration. (willnot schedule new pods on tainted node but runinng pods will not delete also after enable taint to nodes)
+
+*NoExecute—This will immediately evict all the pods without the matching toleration from the node (no new pods will schedule will and also delete runinng pods also after enable taint to nodes)

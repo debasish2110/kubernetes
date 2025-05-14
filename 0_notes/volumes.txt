@@ -1,0 +1,119 @@
+===============================================volume============================
+Step - 1
+a) Create an EKS cluster with the clusteconfig file I provided.
+b) Install helm in your local machine. Below is the link -> https://helm.sh/docs/intro/install/
+c) Connect to your EKS cluster. Check the connection.
+
+-----helm install-----
+
+https://github.com/helm/helm/releases
+
+wget https://get.helm.sh/helm-v3.14.0-linux-amd64.tar.gz
+
+tar -zxvf helm-v3.14.0-linux-amd64.tar.gz
+
+mv linux-amd64/helm /usr/local/bin/helm
+
+chmod 777 /usr/local/bin/helm  # give permissions 
+
+helm version 
+
+Step - 2
+Install CSI driver in EKS cluster by following below steps.
+a) After connection execute the below commands.
+
+helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+helm repo update
+
+#install aws ebs driver to kubernets 
+helm upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
+
+======================================================
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-root-passwd 
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: mysql-configmap
+              key: default_user
+                # - name: MYSQL_PASSWORD #name should be as per ENV
+                #valueFrom:
+                #secretKeyRef:
+                #name: mysql-secret
+                #key: default-user-passwd
+                #- name: MYSQL_PASSWORD
+                #value: test
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+
+===================================
+storageclass.yml
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: mysql-persistent-storage
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+reclaimPolicy: Retain
+mountOptions:
+  - debug
+volumeBindingMode: Immediate
+
+===================================
+configmap.yml
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+data:
+  default_user: user-1   
+
+
+=================================
+secretes.yml
+apiVersion: v1
+kind: Secret
+metadata:
+    name: mysql-secret
+type: Opaque
+data:
+    mysql-root-passwd: cGFzc3dvcmQ=
+    default-user-passwd: dGVzdA==                         
