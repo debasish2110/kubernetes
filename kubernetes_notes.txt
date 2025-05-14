@@ -251,9 +251,9 @@ we are able to seec load blancer link and acces by giving path along
 
 aws configure --profile IAMuser
 
-AKIA6ODUZCK4H2GTR5JT
+<access-key>
 
-9AYwm23X/gNFyl73B86kMxJDJNWvj5uIKpl1MO9X
+<secrete-key>
 
 
 aws eks update-kubeconfig --name naresh --profile IAMuser  #user 
