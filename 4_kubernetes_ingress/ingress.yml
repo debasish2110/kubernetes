@@ -1,4 +1,5 @@
 #https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml -install ingress contr
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.1/deploy/static/provider/cloud/deploy.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -12,21 +13,21 @@ spec:
   rules:
   - http:
       paths:
-      - path: /nginx(/|$)(.*)
+      - path: /nginx(/|$)(.*)       # nginx path
         pathType: Prefix
         backend:
           service:
             name: nginx
             port:
               number: 80
-      - path: /httpd(/|$)(.*)
+      - path: /httpd(/|$)(.*)      #  httpd path
         pathType: Prefix
         backend:
           service:
             name: httpd
             port:
               number: 80
-      - path: /(.*)
+      - path: /(.*)               # no-path
         pathType: Prefix
         backend:
           service:
