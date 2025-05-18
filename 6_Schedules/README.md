@@ -2,7 +2,7 @@
 
 This document provides a detailed explanation of Kubernetes scheduling mechanisms that control **where and how Pods are placed** on nodes. Understanding these concepts helps in optimizing resource usage, managing availability, and improving the resilience of your workloads.
 
-**[schedules-text-notes](https://github.com/debasish2110/kubernetes/blob/master/0_notes/kubernets%20Schedulers.txt)**
+**[scheduling-text-notes](https://github.com/debasish2110/kubernetes/blob/master/0_notes/kubernets%20Schedulers.txt)**
 
 ---
 
