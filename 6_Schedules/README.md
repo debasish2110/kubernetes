@@ -126,6 +126,8 @@ Taints are applied to nodes, and they repel Pods unless the Pod has a matching t
 
 ### Use Case:
 To dedicate nodes to specific workloads and prevent general scheduling.
+Running critical apps on dedicated nodes.
+Keeping test or noisy apps off certain nodes.
 
 ### Taint Example:
 
