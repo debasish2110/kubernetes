@@ -10,7 +10,7 @@ spec:
     - name: nginx
       image: nginx
   tolerations:
-  - key: "app"
-    operator: "Equal"
-    value: "blue"
-    effect: "NoSchedule"
+    - key: "app"
+      operator: "Equal"
+      value: "blue"
+      effect: "NoSchedule"
