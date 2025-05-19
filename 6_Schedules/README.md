@@ -76,6 +76,42 @@ affinity:
           - us-east-1a
 ```
 
+* Node Affinity in Kubernetes uses `In`, `NotIn`, `Gt`, and `Lt` operators, these are used inside matchExpressions under nodeSelectorTerms.
+```yaml
+# example of different operators
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity-demo
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "zone"
+            operator: "In"
+            values:
+            - us-east-1a
+            - us-east-1b
+          - key: "instance-type"
+            operator: "NotIn"
+            values:
+            - t2.micro
+            - t2.nano
+          - key: "cpu-count"
+            operator: "Gt"
+            values:
+            - "2"
+          - key: "memory-gb"
+            operator: "Lt"
+            values:
+            - "64"
+  containers:
+  - name: nginx
+    image: nginx
+```
+
 ### Types:
 
 #### ✅ `requiredDuringSchedulingIgnoredDuringExecution`
@@ -136,13 +172,22 @@ kubectl taint nodes node1 key=value:NoSchedule
 ```
 
 ### Toleration Example:
-
+* `Equal` operator(default):
 ```yaml
 tolerations:
 - key: "key"
   operator: "Equal"
   value: "value"
   effect: "NoSchedule"
+```
+
+* `Exists` opeartor:
+```yaml
+tolerations:
+- key: "environment"
+  operator: "Exists"
+  effect: "NoSchedule"
+
 ```
 
 > 🔄 The Pod with this toleration can be scheduled on nodes with the corresponding taint.
