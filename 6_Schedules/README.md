@@ -8,13 +8,13 @@ This document provides a detailed explanation of Kubernetes scheduling mechanism
 
 ## 📌 Table of Contents
 
-1. [Kubernetes Scheduler](#kubernetes-scheduler)
-2. [NodeSelector](#nodeselector)
-3. [Node Affinity](#node-affinity)
-   - [RequiredDuringSchedulingIgnoredDuringExecution](#requiredduringschedulingignoredduringexecution)
-   - [PreferredDuringSchedulingIgnoredDuringExecution](#preferredduringschedulingignoredduringexecution)
-4. [DaemonSet](#daemonset)
-5. [Taints and Tolerations](#taints-and-tolerations)
+1. [Kubernetes Scheduler](#kubernetes-Scheduler)
+2. [NodeSelector](#NodeSelector)
+3. [Node Affinity](#Node-Affinity)
+   - [RequiredDuringSchedulingIgnoredDuringExecution](#requiredDuringSchedulingIgnoredDuringExecution)
+   - [PreferredDuringSchedulingIgnoredDuringExecution](#preferredDuringSchedulingIgnoredDuringExecution)
+4. [DaemonSet](#DaemonSet)
+5. [Taints and Tolerations](#Taints-and-Tolerations)
 
 ---
 
