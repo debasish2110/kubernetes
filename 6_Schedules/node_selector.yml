@@ -3,11 +3,11 @@ kind: Pod
 metadata:
   name: myapp
   labels:
-      app: webapp
-      type: front-end
+    app: webapp
+    type: front-end
 spec:
   containers:
-  - name: nginx-container 
-    image: nginx
+    - name: nginx-container
+      image: nginx
   nodeSelector:
     size: Large

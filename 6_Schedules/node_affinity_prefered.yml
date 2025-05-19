@@ -12,17 +12,17 @@ spec:
   affinity:
     nodeAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-          - key: size
-            operator: In
-            values:
-            - medium
-      - weight: 50
-        preference:
-          matchExpressions:
-          - key: size
-            operator: In
-            values:
-            - small
+        - weight: 1
+          preference:
+            matchExpressions:
+              - key: size
+                operator: In
+                values:
+                  - medium
+        - weight: 50
+          preference:
+            matchExpressions:
+              - key: size
+                operator: In
+                values:
+                  - small

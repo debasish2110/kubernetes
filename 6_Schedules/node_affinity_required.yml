@@ -3,19 +3,19 @@ kind: Pod
 metadata:
   name: nginx-test
   labels:
-      app: webapp
-      type: front-end
+    app: webapp
+    type: front-end
 spec:
   containers:
-  - name: nginx
-    image: nginx:latest
+    - name: nginx
+      image: nginx:latest
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: size
-            operator: In
-            values:
-            - medium
-            - small
+          - matchExpressions:
+              - key: size
+                operator: In
+                values:
+                  - medium
+                  - small
