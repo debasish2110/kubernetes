@@ -187,10 +187,71 @@ tolerations:
 - key: "environment"
   operator: "Exists"
   effect: "NoSchedule"
-
 ```
 
 > 🔄 The Pod with this toleration can be scheduled on nodes with the corresponding taint.
+
+
+## 🧩 `effect` in Tolerations
+
+In Kubernetes **tolerations**, the `effect` defines **what kind of taint the pod is tolerating** — it tells the scheduler how to treat the pod in relation to a tainted node.
+
+### 🎯 Possible `effect` Values
+
+| `effect`            | Description                                                                                      |
+|---------------------|--------------------------------------------------------------------------------------------------|
+| `NoSchedule`        | Pod **will not be scheduled** on the tainted node unless it has a matching toleration.          |
+| `PreferNoSchedule`  | Scheduler **tries to avoid** placing the Pod on the node, but **might still do it**.            |
+| `NoExecute`         | Pod **will be evicted** from the node unless it has a matching toleration.                      |
+
+---
+
+### 🔍 Detailed Explanation
+
+#### 🛑 `NoSchedule`
+Most strict. Prevents the scheduler from placing the pod on the tainted node.
+
+```yaml
+tolerations:
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "NoSchedule"
+```
+
+#### ⚠️ `PreferNoSchedule`
+Less strict. Scheduler avoids placing pods on the tainted node, but will do so if needed.
+
+```yaml
+tolerations:
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "PreferNoSchedule"
+```
+
+#### 🚫 `NoExecute`
+Affects both **scheduling and existing pods**:
+- If the pod is already running on a node with a `NoExecute` taint, it will be evicted unless it tolerates the taint.
+- You can optionally specify `tolerationSeconds` to delay eviction.
+
+```yaml
+tolerations:
+- key: "key"
+  operator: "Equal"
+  value: "value"
+  effect: "NoExecute"
+  tolerationSeconds: 60
+```
+
+---
+
+### 🧠 Summary
+
+- `NoSchedule` → Don’t allow scheduling without toleration.
+- `PreferNoSchedule` → Avoid scheduling here if possible.
+- `NoExecute` → Evict running pods without toleration.
+
 
 ---
 
