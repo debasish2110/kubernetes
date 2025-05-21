@@ -37,9 +37,31 @@ mychart/
 
 Contains metadata about the Helm chart like name, version, description, and application version.
 
+```yaml
+apiVersion: v2
+name: mychart
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+```
+
 ### `values.yaml`
 
 Holds the default configuration values for the chart. These values are referenced in the templates.
+
+```yaml
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+```
 
 ### `templates/deployment.yaml`
 
