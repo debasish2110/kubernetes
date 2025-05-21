@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: myapp-argo-application
-  namespace: argocd
+  namespace: argocd  # name space where argoCd pods are running, this is how if identifies in which argocd to deploy
 spec:
   project: default
 
@@ -13,7 +13,7 @@ spec:
     path: 7_ArgoCd
   destination:
     server: https://kubernetes.default.svc
-    namespace: myapp
+    namespace: myapp  # app pod will be created under myapp namespace
 
   syncPolicy:
     syncOptions:
