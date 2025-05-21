@@ -2,6 +2,11 @@
 
 Helm is a package manager for Kubernetes. A Helm chart is like a "recipe" for deploying an application or a component in a Kubernetes cluster. It defines how to install, configure, and run an application.
 
+## installation
+```bash
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
 ---
 
 ## 📁 Chart Structure
